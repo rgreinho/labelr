@@ -1,0 +1,28 @@
+version: '2'
+
+tasks:
+  build:
+    desc: Build the go binary.
+    cmds:
+      - go build -v -i ./..
+    silent: true
+  test:
+    desc: Run the unit tests.
+    cmds:
+      - go test -v -cover -coverprofile=coverage.out ./...
+    silent: true
+  coverage:
+    desc: Show the code coverage in text format.
+    cmds:
+      - go tool cover -func=coverage.out
+    silent: true
+  coverage-html:
+    desc: Show the code coverage in HTML format.
+    cmds:
+      - go tool cover -html=coverage.out
+    silent: true
+  lint:
+    desc: Run the linters.
+    cmds:
+      - golangci-lint run
+    silent: true
