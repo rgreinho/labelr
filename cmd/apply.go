@@ -58,28 +58,51 @@ to quickly create a Cobra application.`,
 			r, err := cmd.Flags().GetString("repository")
 			if err != nil {
 				log.Fatalf("No repository name specified: %s", err)
-				repository = r
 			}
+			repository = r
 		}
 
 		// Get token.
-		token, err := cmd.Flags().GetString("token")
-		if err != nil {
-			log.Fatalf("No token specified: %s", err)
+		token := os.Getenv("GITHUB_TOKEN")
+		if token == "" {
+			t, err := cmd.Flags().GetString("token")
+			if err != nil {
+				log.Fatalf("No token specified: %s", err)
+			}
+			token = t
+		}
+
+		// Get organization.
+		organization := os.Getenv("GITHUB_ORGANIZATION")
+		if organization == "" {
+			org, err := cmd.Flags().GetString("org")
+			if err != nil {
+				log.Fatalf("No organization name specified: %s", err)
+			}
+			organization = org
 		}
 
 		// Prepare client.
 		g := labeler.NewGHClient(owner, repository, token)
 
+		// Delete labels if need be.
+		sync, err := cmd.Flags().GetBool("sync")
+
 		// Apply labels.
-		err = g.Apply()
+		if organization == "" {
+			err = g.Apply(sync)
+		} else {
+			g.Owner = organization
+			err = g.ApplyToOrg(organization, sync)
+		}
 		if err != nil {
-			log.Printf("Cannot apply labels: %s\n", err)
-			os.Exit(1)
+			log.Fatalf("Cannot apply labels: %s\n", err)
 		}
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(applyCmd)
+	rootCmd.PersistentFlags().StringP("org", "", "", "GitHub organization")
+	applyCmd.Flags().Bool("sync", false, "Synchronize the labels")
 }

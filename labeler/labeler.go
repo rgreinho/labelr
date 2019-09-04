@@ -39,11 +39,20 @@ func NewGHClient(owner, repository, token string) *GHClient {
 }
 
 // Apply retrieves the collaborator information.
-func (g *GHClient) Apply() error {
+func (g *GHClient) Apply(sync bool) error {
 	// Read label file.
-	newLabels, err := ParseFile("/Users/remy/projects/aura-atx/.github/labels.yml")
+	labelfile := "/Users/remy/projects/aura-atx/.github/labels.yml"
+	newLabels, err := ParseFile(labelfile)
 	if err != nil {
 		return fmt.Errorf("cannot parse label file: %s", err)
+	}
+
+	// Delete existing labels if need be.
+	if sync {
+		err := g.DeleteLabels()
+		if err != nil {
+			return fmt.Errorf("cannot delete labels: %s", err)
+		}
 	}
 
 	// Go through the labels from the file.
@@ -74,13 +83,49 @@ func (g *GHClient) Apply() error {
 }
 
 // List lists existing labels.
-func (g *GHClient) List() error {
+func (g *GHClient) List() ([]*github.Label, error) {
 	ctx := context.Background()
 	labels, _, err := g.Client.Issues.ListLabels(ctx, g.Owner, g.Repository, &github.ListOptions{})
 	if err != nil {
+		return nil, err
+	}
+
+	return labels, nil
+}
+
+// DeleteLabels delete all labels in a repository.
+func (g *GHClient) DeleteLabels() error {
+	ctx := context.Background()
+	labels, err := g.List()
+	if err != nil {
 		return err
 	}
-	fmt.Printf("%s", labels)
+	for _, label := range labels {
+		_, err := g.Client.Issues.DeleteLabel(ctx, g.Owner, g.Repository, *label.Name)
+		if err != nil {
+			return fmt.Errorf("cannot delete label %q: %s", *label.Name, err)
+		}
+	}
+	return nil
+}
+
+// ApplyToOrg applies labels to a full organization.
+func (g *GHClient) ApplyToOrg(organization string, sync bool) error {
+	ctx := context.Background()
+	repositories := []*github.Repository{}
+	if organization != "" {
+		repos, _, err := g.Client.Repositories.ListByOrg(ctx, organization, &github.RepositoryListByOrgOptions{})
+		if err != nil {
+			return fmt.Errorf("Cannot list repositories of %q organization: %s", organization, err)
+		}
+		repositories = repos
+	}
+	for _, r := range repositories {
+		g.Repository = *r.Name
+		if err := g.Apply(sync); err != nil {
+			return fmt.Errorf("cannot apply labels to %q organization: %s", organization, err)
+		}
+	}
 	return nil
 }
 
