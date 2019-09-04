@@ -4,7 +4,7 @@ go 1.12
 
 require (
 	github.com/github/hub v2.11.2+incompatible
-	github.com/google/go-github/v26 v26.1.3 // indirect
+	github.com/google/go-github/v26 v26.1.3
 	github.com/google/go-github/v28 v28.0.1
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/mattn/go-colorable v0.1.2 // indirect
