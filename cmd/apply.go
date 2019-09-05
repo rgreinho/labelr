@@ -32,13 +32,9 @@ import (
 // applyCmd represents the apply command
 var applyCmd = &cobra.Command{
 	Use:   "apply",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Applies GitHub labels",
+	Long:  `Applies GitHub labels to a repository or to an organization.`,
+	Args:  cobra.MaximumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		// Get the owner and repository.
 		// 1. from repo
@@ -73,27 +69,31 @@ to quickly create a Cobra application.`,
 		}
 
 		// Get organization.
-		organization := os.Getenv("GITHUB_ORGANIZATION")
-		if organization == "" {
-			org, err := cmd.Flags().GetString("org")
-			if err != nil {
-				log.Fatalf("No organization name specified: %s", err)
+		org, _ := cmd.Flags().GetBool("org")
+		if org && owner == "" {
+			if owner = os.Getenv("GITHUB_ORGANIZATION"); owner == "" {
+				log.Fatalf("An owner is required. Run this command from a repository, set '$GITHUB_ORGANIZATION', or use '--owner'")
 			}
-			organization = org
 		}
 
 		// Prepare client.
-		g := labeler.NewGHClient(owner, repository, token)
+		g := labeler.NewLabeler(owner, repository, token)
 
-		// Delete labels if need be.
-		sync, err := cmd.Flags().GetBool("sync")
+		// Get sync flag (delete labels if need be).
+		sync, _ := cmd.Flags().GetBool("sync")
+
+		// Set label file.
+		labelFile := "labels.yml"
+		if len(args) == 1 {
+			labelFile = args[0]
+		}
 
 		// Apply labels.
-		if organization == "" {
-			err = g.Apply(sync)
+		var err error
+		if org {
+			err = g.ApplyToOrg(sync, labelFile, owner)
 		} else {
-			g.Owner = organization
-			err = g.ApplyToOrg(organization, sync)
+			err = g.Apply(sync, labelFile)
 		}
 		if err != nil {
 			log.Fatalf("Cannot apply labels: %s\n", err)
@@ -103,6 +103,6 @@ to quickly create a Cobra application.`,
 
 func init() {
 	rootCmd.AddCommand(applyCmd)
-	rootCmd.PersistentFlags().StringP("org", "", "", "GitHub organization")
+	applyCmd.PersistentFlags().Bool("org", false, "Apply labels to a GitHub organization")
 	applyCmd.Flags().Bool("sync", false, "Synchronize the labels")
 }
