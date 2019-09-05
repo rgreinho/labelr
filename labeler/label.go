@@ -31,7 +31,7 @@ func (l *Labels) String() string {
 		buffer.WriteString(fmt.Sprintf("%s\n", label.String()))
 	}
 
-	return fmt.Sprintf("%s", buffer.String())
+	return buffer.String()
 }
 
 func readFile(file string) ([]byte, error) {
