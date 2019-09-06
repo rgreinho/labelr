@@ -28,10 +28,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Version is used by the build system.
+var Version string
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "labeler",
-	Short: "Manage your GitHub labels efficiently",
+	Use:     "labeler",
+	Short:   "Manage your GitHub labels efficiently",
+	Version: Version,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },

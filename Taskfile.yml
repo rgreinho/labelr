@@ -1,26 +1,42 @@
 version: '2'
 
+vars:
+  DIST_DIR: dist
+  GOARCH: amd64
+  PROJECT_NAME: labeler
+  TAG: {sh: git describe}
+  BUILD_FLAGS : -ldflags="-X 'github.com/rgreinho/labeler/cmd.Version={{.TAG}}'"
+  OUT: "{{.DIST_DIR}}/{{.PROJECT_NAME}}-{{.TAG}}"
+
+
 tasks:
   build:
-    desc: Build the go binary.
+    desc: Build the go binaries.
     cmds:
-      - go build -v -i ./..
+      - mkdir -p {{.DIST_DIR}}
+      - GOOS=darwin  GOARCH={{.GOARCH}} go build {{.BUILD_FLAGS}} -o {{.OUT}}-darwin-{{.GOARCH}}
+      - GOOS=linux   GOARCH={{.GOARCH}} go build {{.BUILD_FLAGS}} -o {{.OUT}}-linux-{{.GOARCH}}
+      - GOOS=windows GOARCH={{.GOARCH}} go build {{.BUILD_FLAGS}} -o {{.OUT}}-windows-{{.GOARCH}}
     silent: true
+
   test:
     desc: Run the unit tests.
     cmds:
       - go test -v -cover -coverprofile=coverage.out ./...
     silent: true
+
   coverage:
     desc: Show the code coverage in text format.
     cmds:
       - go tool cover -func=coverage.out
     silent: true
+
   coverage-html:
     desc: Show the code coverage in HTML format.
     cmds:
       - go tool cover -html=coverage.out
     silent: true
+
   lint:
     desc: Run the linters.
     cmds:
