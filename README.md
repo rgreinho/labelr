@@ -6,7 +6,7 @@ With `labeler`, managing your GitHub labels becomes effortless. `labeler` will a
 
 ## Infered values and environment variables
 
-`labeler` will automatically detect the owner or organization and the repostiory from the directory where you are running the command. It will also look for a file named `labels.yml`.
+`labeler` will automatically detect the owner or organization and the repostiory from the directory where you are running the command. It will also look automatically for a file named `labels.yml`.
 
 The following environment variables are used by `labeler`:
 
@@ -22,6 +22,12 @@ The following environment variables are used by `labeler`:
 1. Infered information from current directory
 2. environment variables
 3. CLI arguments
+
+## Existing labels
+
+For existing labels, description and color will be updated to match the content of `the labels.yml` file.
+
+However, **labels cannot be renamed**. this is due to the fact that the tool does not keep track of the existing configuration. If the name of a label gets changed, a new label will be created instead.
 
 ## Usage examples
 
