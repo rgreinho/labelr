@@ -1,13 +1,12 @@
-version: '2'
+version: "2"
 
 vars:
   DIST_DIR: dist
   GOARCH: amd64
   PROJECT_NAME: labeler
-  TAG: {sh: git describe}
-  BUILD_FLAGS : -ldflags="-X 'github.com/rgreinho/labeler/cmd.Version={{.TAG}}'"
+  TAG: { sh: git describe --tags || echo standalone }
+  BUILD_FLAGS: -ldflags="-X 'github.com/rgreinho/labeler/cmd.Version={{.TAG}}'"
   OUT: "{{.DIST_DIR}}/{{.PROJECT_NAME}}-{{.TAG}}"
-
 
 tasks:
   build:
