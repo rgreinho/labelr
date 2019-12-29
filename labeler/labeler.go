@@ -66,10 +66,14 @@ func (l *Labeler) Apply(sync bool, labelFile string) error {
 		ctx := context.Background()
 		_, r, err := l.Client.Issues.CreateLabel(ctx, l.Owner, l.Repository, ghLabel)
 
-		// Ignore error if the label already exists.
+		// Update the label if the it already exists.
 		if r.StatusCode == 422 {
+			if _, _, err := l.Client.Issues.EditLabel(ctx, l.Owner, l.Repository, *ghLabel.Name, ghLabel); err != nil {
+				return fmt.Errorf("cannot update label: %s", err)
+			}
 			continue
 		}
+
 		if err != nil {
 			return err
 		}
