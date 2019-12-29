@@ -1,5 +1,8 @@
 # labeler
 
+![](https://github.com/rgreinho/labeler/workflows/ci/badge.svg)
+
+
 Manage your GitHub labels efficiently.
 
 With `labeler`, managing your GitHub labels becomes effortless. `labeler` will attempt to detect all the information required to apply the labels wherever you need them to be.
