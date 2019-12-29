@@ -27,7 +27,30 @@ The following environment variables are used by `labeler`:
 
 For existing labels, description and color will be updated to match the content of `the labels.yml` file.
 
-However, **labels cannot be renamed**. this is due to the fact that the tool does not keep track of the existing configuration. If the name of a label gets changed, a new label will be created instead.
+However, **labels cannot be renamed**. This is due to the fact that the tool does not keep track of the existing configuration. If the name of a label gets changed, a new label will be created.
+
+## labels.yml
+
+The `labels.yml` file has a simple format:
+
+```yml
+---
+labels:
+  - name: "kind/bug"
+    color: "#D73A4A"
+    description: "Something isn't working"
+```
+
+The top level key `labels` is used to group the labels together. Each label then becomes an entry under this key.
+
+Each label entry is composed of the following fields:
+
+* `name` (required)
+* `color` (required)
+* `description` (optional)
+
+For a complete example, have a look at the labels used
+[for this project](https://github.com/rgreinho/labeler/blob/master/.github/labels.yml).
 
 ## Usage examples
 
