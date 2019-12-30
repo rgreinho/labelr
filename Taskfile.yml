@@ -1,10 +1,18 @@
 version: "2"
 
 vars:
+  GREETING: Hello from Taskfile!
   DIST_DIR: dist
   GOARCH: amd64
   PROJECT_NAME: labeler
-  TAG: { sh: git describe --tags || echo standalone }
+  TAG:
+    sh: |
+      if [ -n "$GITHUB_REF" ];then
+        GH_REF=${GITHUB_REF:11}
+        echo ${GH_REF:=standalone}
+      else
+        git describe --tags
+      fi
   BUILD_FLAGS: -ldflags="-X 'github.com/rgreinho/labeler/cmd.Version={{.TAG}}'"
   OUT: "{{.DIST_DIR}}/{{.PROJECT_NAME}}-{{.TAG}}"
 
@@ -12,7 +20,7 @@ tasks:
   build:
     desc: Build the go binaries.
     cmds:
-      - mkdir -p {{.DIST_DIR}}
+      - mkdir -p "{{.DIST_DIR}}"
       - GOOS=darwin  GOARCH={{.GOARCH}} go build {{.BUILD_FLAGS}} -o {{.OUT}}-darwin-{{.GOARCH}}
       - GOOS=linux   GOARCH={{.GOARCH}} go build {{.BUILD_FLAGS}} -o {{.OUT}}-linux-{{.GOARCH}}
       - GOOS=windows GOARCH={{.GOARCH}} go build {{.BUILD_FLAGS}} -o {{.OUT}}-windows-{{.GOARCH}}
@@ -41,3 +49,8 @@ tasks:
     cmds:
       - golangci-lint run
     silent: true
+
+  release:
+    desc: Create a GitHub release
+    cmds:
+      - keeparelease -t {{.TAG}} $(ls {{.DIST_DIR}} | xargs -n1 echo -a)
