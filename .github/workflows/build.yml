@@ -36,7 +36,11 @@ jobs:
           version: "2.8.0"
       - name: Install tools
         run: |
+          mkdir -p bin
           curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s v1.21.0
+          curl -sLO https://github.com/rgreinho/keeparelease/releases/download/1.1.2/keeparelease-1.1.2-linux-amd64
+          chmod a+x keeparelease-1.1.2-linux-amd64
+          mv keeparelease-1.1.2-linux-amd64 bin/keeparelease
           echo "::add-path::$GITHUB_WORKSPACE/bin"
 
       # Setup the project.
