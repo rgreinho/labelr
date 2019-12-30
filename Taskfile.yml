@@ -8,7 +8,7 @@ vars:
   TAG:
     sh: |
       if [ -n "$GITHUB_REF" ];then
-        GH_REF=${GITHUB_REF:11}
+        GH_REF=${GITHUB_REF:10}
         echo ${GH_REF:=standalone}
       else
         git describe --tags
