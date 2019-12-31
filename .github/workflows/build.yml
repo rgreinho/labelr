@@ -56,6 +56,15 @@ jobs:
         run: task build
 
       # Publish a new release when a tag is created.
+      - name: Prepare release content
+        run: keeparelease -x > ${{ github.workflow }}-release.md
+      - name: Publish the release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          body_path: ${{ github.workflow }}-release.md
+          files: |
+            dist/*
       - name: Publish the release
         if: startsWith(github.event.ref, 'refs/tags')
         run: task release
