@@ -2,7 +2,6 @@
 
 ![](https://github.com/rgreinho/labeler/workflows/ci/badge.svg)
 
-
 Manage your GitHub labels efficiently.
 
 With `labeler`, managing your GitHub labels becomes effortless. `labeler` will attempt to detect all the information required to apply the labels wherever you need them to be.
@@ -101,6 +100,8 @@ labeler apply --org
 labeler apply --sync --org
 ```
 
+> *NOTE: without the `--sync` option, existing labels are updated and new labels added. Nothing gets removed.*
+
 #### Apply labels to the current repository
 
 ```bash
@@ -113,10 +114,14 @@ labeler apply [--sync]
 labeler apply [--sync] --repository other-repository
 ```
 
-#### Apply labels from a random directory
+### Apply labels from a random directory
 
 You may want to run `labeler` from anywhere on your system. Not a problem, simply pass all the values to the CLI:
 
 ```bash
-labeler apply [--sync] --owner myself --repository my-repository --token ${OTHER_GITHUB_TOKEN} /tmp/my-label-file.yml
+labeler apply [--sync] \
+  --owner myself \
+  --repository my-repository \
+  --token ${OTHER_GITHUB_TOKEN} \
+  /tmp/my-label-file.yml
 ```
