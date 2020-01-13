@@ -1,4 +1,4 @@
-package labeler
+package labelr
 
 import (
 	"context"
@@ -14,22 +14,22 @@ import (
 
 var remoteRegex = regexp.MustCompile(`(?m)github.com(?:[:/])(?P<owner>[^\/]*)/(?P<repo>[^\/]*)\.git`)
 
-// Labeler defines a GitHub client.
-type Labeler struct {
+// Labelr defines a GitHub client.
+type Labelr struct {
 	Owner      string
 	Repository string
 	Client     *github.Client
 }
 
-// NewLabeler creates a new GitHub client.
-func NewLabeler(owner, repository, token string) *Labeler {
+// NewLabelr creates a new GitHub client.
+func NewLabelr(owner, repository, token string) *Labelr {
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: token},
 	)
 	tc := oauth2.NewClient(ctx, ts)
 	g := github.NewClient(tc)
-	return &Labeler{
+	return &Labelr{
 		Owner:      owner,
 		Repository: repository,
 		Client:     g,
@@ -37,7 +37,7 @@ func NewLabeler(owner, repository, token string) *Labeler {
 }
 
 // Apply retrieves the collaborator information.
-func (l *Labeler) Apply(sync bool, labelFile string) error {
+func (l *Labelr) Apply(sync bool, labelFile string) error {
 	// Read label file.
 	newLabels, err := ParseFile(labelFile)
 	if err != nil {
@@ -83,7 +83,7 @@ func (l *Labeler) Apply(sync bool, labelFile string) error {
 }
 
 // List lists existing labels.
-func (l *Labeler) List() ([]*github.Label, error) {
+func (l *Labelr) List() ([]*github.Label, error) {
 	ctx := context.Background()
 	labels, _, err := l.Client.Issues.ListLabels(ctx, l.Owner, l.Repository, &github.ListOptions{})
 	if err != nil {
@@ -94,7 +94,7 @@ func (l *Labeler) List() ([]*github.Label, error) {
 }
 
 // DeleteLabels delete all labels in a repository.
-func (l *Labeler) DeleteLabels() error {
+func (l *Labelr) DeleteLabels() error {
 	ctx := context.Background()
 	labels, err := l.List()
 	if err != nil {
@@ -109,7 +109,7 @@ func (l *Labeler) DeleteLabels() error {
 }
 
 // ApplyToOrg applies labels to a full organization.
-func (l *Labeler) ApplyToOrg(sync bool, labelFile, organization string) error {
+func (l *Labelr) ApplyToOrg(sync bool, labelFile, organization string) error {
 	ctx := context.Background()
 	repositories := []*github.Repository{}
 	if organization != "" {

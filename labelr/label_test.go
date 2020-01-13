@@ -1,4 +1,4 @@
-package labeler
+package labelr
 
 import (
 	"reflect"

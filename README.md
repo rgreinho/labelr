@@ -1,16 +1,16 @@
-# labeler
+# labelr
 
-![](https://github.com/rgreinho/labeler/workflows/ci/badge.svg)
+![](https://github.com/rgreinho/labelr/workflows/ci/badge.svg)
 
 Manage your GitHub labels efficiently.
 
-With `labeler`, managing your GitHub labels becomes effortless. `labeler` will attempt to detect all the information required to apply the labels wherever you need them to be.
+With `labelr`, managing your GitHub labels becomes effortless. `labelr` will attempt to detect all the information required to apply the labels wherever you need them to be.
 
 ## Infered values and environment variables
 
-`labeler` will automatically detect the owner or organization and the repostiory from the directory where you are running the command. It will also look automatically for a file named `labels.yml`.
+`labelr` will automatically detect the owner or organization and the repostiory from the directory where you are running the command. It will also look automatically for a file named `labels.yml`.
 
-The following environment variables are used by `labeler`:
+The following environment variables are used by `labelr`:
 
 * GITHUB_ORGANIZATION
 * GITHUB_REPOSITORY
@@ -19,7 +19,7 @@ The following environment variables are used by `labeler`:
 
 ### Precedence
 
-`labeler` looks for information in this order:
+`labelr` looks for information in this order:
 
 1. Infered information from current directory
 2. environment variables
@@ -52,7 +52,7 @@ Each label entry is composed of the following fields:
 * `description` (optional)
 
 For a complete example, have a look at the labels used
-[for this project](https://github.com/rgreinho/labeler/blob/master/.github/labels.yml).
+[for this project](https://github.com/rgreinho/labelr/blob/master/.github/labels.yml).
 
 ## Usage examples
 
@@ -81,7 +81,7 @@ origin	https://github.com/aura-atx/.github (fetch)
 origin	https://github.com/aura-atx/.github (push)
 ```
 
-From this setup, and unless specified otherwise from the CLI, `labeler` will use the following information:
+From this setup, and unless specified otherwise from the CLI, `labelr` will use the following information:
 
 * `owner` and `organization` will be `aura-atx`
 * `repository` will be `.github`
@@ -91,13 +91,13 @@ From this setup, and unless specified otherwise from the CLI, `labeler` will use
 #### Apply the new labels to all the repositories in the organization
 
 ```bash
-labeler apply --org
+labelr apply --org
 ```
 
 #### Remove existing labels and apply the new ones to all the repositories in the organization
 
 ```bash
-labeler apply --sync --org
+labelr apply --sync --org
 ```
 
 > *NOTE: without the `--sync` option, existing labels are updated and new labels added. Nothing gets removed.*
@@ -105,21 +105,21 @@ labeler apply --sync --org
 #### Apply labels to the current repository
 
 ```bash
-labeler apply [--sync]
+labelr apply [--sync]
 ```
 
 #### Apply labels to a specific repository from the same owner or organization
 
 ```bash
-labeler apply [--sync] --repository other-repository
+labelr apply [--sync] --repository other-repository
 ```
 
 ### Apply labels from a random directory
 
-You may want to run `labeler` from anywhere on your system. Not a problem, simply pass all the values to the CLI:
+You may want to run `labelr` from anywhere on your system. Not a problem, simply pass all the values to the CLI:
 
 ```bash
-labeler apply [--sync] \
+labelr apply [--sync] \
   --owner myself \
   --repository my-repository \
   --token ${OTHER_GITHUB_TOKEN} \
