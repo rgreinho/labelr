@@ -12,6 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 First stable release.
 
 [//]: # (Release links)
-[1.0.0]: https://github.com/rgreinho/labeler/releasestag/1.0.0
+[1.0.0]: https://github.com/rgreinho/labelr/releasestag/1.0.0
 
 [//]: # (Issue/PR links)

@@ -1,4 +1,4 @@
-package labeler
+package labelr
 
 import (
 	"bytes"
@@ -15,7 +15,7 @@ type Label struct {
 	Color       string
 }
 
-// Labels represents the content of a labeler file.
+// Labels represents the content of a labelr file.
 type Labels struct {
 	Labels []Label `yaml:",flow"`
 }

@@ -4,7 +4,7 @@ vars:
   GREETING: Hello from Taskfile!
   DIST_DIR: dist
   GOARCH: amd64
-  PROJECT_NAME: labeler
+  PROJECT_NAME: labelr
   TAG:
     sh: |
       if [ -n "$GITHUB_REF" ];then
@@ -13,7 +13,7 @@ vars:
       else
         git describe --tags
       fi
-  BUILD_FLAGS: -ldflags="-X 'github.com/rgreinho/labeler/cmd.Version={{.TAG}}'"
+  BUILD_FLAGS: -ldflags="-X 'github.com/rgreinho/labelr/cmd.Version={{.TAG}}'"
   OUT: "{{.DIST_DIR}}/{{.PROJECT_NAME}}-{{.TAG}}"
 
 tasks:
